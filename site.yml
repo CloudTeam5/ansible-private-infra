@@ -1,0 +1,13 @@
+---
+- name: 1) NTP 시간 동기화 서버 설정
+  hosts: ntp_servers
+  become: yes
+  gather_facts: yes
+
+  pre_tasks:
+    - name: Display target OS
+      debug:
+        msg: "Configuring NTP on {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+  roles:
+    - ntp

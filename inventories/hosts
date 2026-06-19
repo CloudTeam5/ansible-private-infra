@@ -1,0 +1,13 @@
+[control]
+ansible ansible_host=192.168.10.10 ansible_connection=local
+
+[ntp_servers]
+ansible1 ansible_host=192.168.10.11
+ansible2 ansible_host=192.168.10.12
+ansible3 ansible_host=192.168.10.13
+ansible4 ansible_host=192.168.10.14
+
+[all:vars]
+ansible_user=root
+ansible_password=your_password  # 또는 ssh key 사용
+ansible_port=22

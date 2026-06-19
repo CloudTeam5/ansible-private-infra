@@ -1,0 +1,6 @@
+---
+ntp_servers:
+  - 0.af.pool.ntp.org
+  - 1.af.pool.ntp.org
+  - 2.af.pool.ntp.org
+  - 3.af.pool.ntp.org

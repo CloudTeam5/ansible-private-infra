@@ -1,0 +1,28 @@
+{% for server in ntp_servers %}
+server {{ server }} iburst
+{% endfor %}
+
+# Allow NTP requests from localhost
+allow 127.0.0.1
+allow ::1
+
+# Record the rate at which the system clock is gaining/losing time
+driftfile /var/lib/chrony/drift
+
+# Enable kernel synchronization of the real-time clock (RTC)
+rtcsync
+
+# Enable hardware timestamping
+#hwtimestamp *
+
+# Increase the minimum number of selectable sources required to adjust
+minsources 1
+
+# Specify file containing keys for NTP authentication
+keyfile /etc/chrony.keys
+
+# Specify the directory for log files
+logdir /var/log/chrony
+
+# Select which information is logged into the log file
+log measurements statistics tracking
