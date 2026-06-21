@@ -8,7 +8,8 @@ $TTL 86400
 
 @       IN  NS      ns1.{{ domain }}.
 ns1     IN  A       {{ dns_ip }}
-www     IN  A       192.168.10.20
-ftp     IN  A       192.168.10.30
-mail    IN  A       192.168.10.40
+www     IN  A       {{ web_ip }}
+ntp     IN  A       {{ ntp_ip }}
+mail    IN  A       {{ mail_ip }}
+ftp     IN  A       {{ ftp_ip }}
 @       IN  MX  10  mail.{{ domain }}.

@@ -1,4 +1,8 @@
 domain: team5.example.com
 dns_ip: 192.168.10.11
+web_ip: 192.168.10.12
+ntp_ip: 192.168.10.13
+mail_ip: 192.168.10.14
+ftp_ip: 192.168.10.14
 network: 192.168.10
 reverse_network: 10.168.192

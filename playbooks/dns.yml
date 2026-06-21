@@ -2,6 +2,6 @@
 - name: DNS Server Setup
   hosts: dns_servers
   vars_files:
-    - ../group_vars/dns_servers.yml
+    - ../group_vars/all.yml
   roles:
     - dns
