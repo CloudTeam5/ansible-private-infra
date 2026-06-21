@@ -1,0 +1,4 @@
+domain: team5.example.com
+dns_ip: 192.168.10.11
+network: 192.168.10
+reverse_network: 10.168.192
