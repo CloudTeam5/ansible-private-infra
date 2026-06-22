@@ -1,0 +1,25 @@
+---
+- name: 1) FTP 패키지 설치 및 서비스 기동
+  dnf:
+    name: vsftpd
+    state: present
+
+- name: vsftpd 서비스 시작 및 활성화
+  service:
+    name: vsftpd
+    state: started
+    enabled: true
+
+- name: 2) FTP 방화벽 패키지 확인 및 포트 등록
+  firewalld:
+    service: ftp
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: 3) FTP 기본 설정 및 익명 사용자 접근 제한
+  lineinfile:
+    path: /etc/vsftpd/vsftpd.conf
+    regexp: '^anonymous_enable='
+    line: 'anonymous_enable=NO'
+  notify: Restart VSFTPD

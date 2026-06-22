@@ -1,0 +1,8 @@
+# Ansible logs and temporary files
+*.log
+*.retry
+.ansible_cache/
+
+# OS generated files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,41 @@
+---
+- name: 1) SMTP(Postfix) & IMAP/POP3(Dovecot) 패키지 설치
+  dnf:
+    name:
+      - postfix
+      - dovecot
+    state: present
+
+- name: Mail 서비스 시작 및 자동 기동 설정
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - postfix
+    - dovecot
+
+- name: 2) Mail 방화벽 포트 등록 및 활성화
+  firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+    immediate: true
+  loop:
+    - smtp
+    - imap
+    - pop3
+
+- name: 3) Postfix 메인 설정 (모든 네트워크 인터페이스 리슨)
+  lineinfile:
+    path: /etc/postfix/main.cf
+    regexp: '^inet_interfaces ='
+    line: 'inet_interfaces = all'
+  notify: Restart Mail Services
+
+- name: Dovecot 프로토콜 설정 활성화
+  lineinfile:
+    path: /etc/dovecot/dovecot.conf
+    regexp: '^#protocols ='
+    line: 'protocols = imap pop3 lmtp'
+  notify: Restart Mail Services
