@@ -25,3 +25,17 @@
   hosts: dns_servers
   roles:
     - dns
+
+- name: WEB Server Setup
+  hosts: web_servers
+  roles:
+    - web
+
+- name: WEB 접속 확인
+  hosts: localhost
+  tasks:
+    - name: 웹 접속 확인
+      uri:
+        url: "http://{{ hostvars['web1']['ansible_host'] }}"
+        return_content: true
+        status_code: 200
