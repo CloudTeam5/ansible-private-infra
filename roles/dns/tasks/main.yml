@@ -1,0 +1,56 @@
+---
+# ===== DNS 서버 설정 플랜 =====
+# 1. 패키지 설치   : bind, bind-utils
+# 2. 서비스 설정   : /etc/named.conf (메인설정)
+#                    /var/named/{{ domain }}.zone (정방향)
+#                    /var/named/{{ domain }}.rev  (역방향)
+# 3. 서비스 기동   : named.service
+# 4. 방화벽 등록   : dns (53/tcp, 53/udp)
+# 5. DNS 클라이언트: nmcli로 resolv.conf 자동 업데이트
+# ==============================
+
+- name: Install bind packages
+  dnf:
+    name:
+      - bind
+      - bind-utils
+    state: present
+
+- name: Configure named.conf
+  template:
+    src: named.conf.j2
+    dest: /etc/named.conf
+  notify: restart named
+
+- name: Configure forward zone
+  template:
+    src: forward.zone.j2
+    dest: "/var/named/{{ domain }}.zone"
+  notify: restart named
+
+- name: Configure reverse zone
+  template:
+    src: reverse.zone.j2
+    dest: "/var/named/{{ domain }}.rev"
+  notify: restart named
+
+- name: Start and enable named
+  service:
+    name: named
+    state: started
+    enabled: true
+
+- name: Open DNS port
+  command: firewall-cmd --permanent --add-service=dns
+
+- name: Reload firewalld
+  command: firewall-cmd --reload
+
+- name: Set DNS client via nmcli
+  command: >
+    nmcli connection modify eth0
+    ipv4.dns "{{ hostvars['dns1']['ansible_host'] }} 8.8.8.8"
+    ipv4.dns-search "{{ domain }}"
+
+- name: Apply nmcli connection
+  command: nmcli connection up eth0

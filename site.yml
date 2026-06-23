@@ -1,16 +1,5 @@
 ---
-- name: 1) NTP 시간 동기화 서버 설정
-  hosts: ntp_servers
-  become: yes
-  gather_facts: yes
 
-  pre_tasks:
-    - name: Display target OS
-      debug:
-        msg: "Configuring NTP on {{ ansible_distribution }} {{ ansible_distribution_version }}"
-
-  roles:
-    - ntp
 
 ################################################################
 # Play 01: [Role: ftp] 정의 (Target: ansible4)
@@ -29,8 +18,10 @@
 # 5) 설정 변경 반영을 위한 통합 메일 서비스 재기동 핸들러 연동
 ################################################################
 
-- name: 4) FTP 및 Mail 서버 구축 (Role 기반)
-  hosts: mail_ftp_server
+
+
+
+- name: DNS Server Setup
+  hosts: dns_servers
   roles:
-    - ftp
-    - mail
+    - dns

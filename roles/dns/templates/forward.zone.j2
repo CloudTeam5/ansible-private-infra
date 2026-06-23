@@ -1,0 +1,15 @@
+$TTL 86400
+@   IN  SOA ns1.{{ domain }}. admin.{{ domain }}. (
+        2024010101  ; Serial
+        3600        ; Refresh
+        1800        ; Retry
+        604800      ; Expire
+        86400 )     ; Minimum
+
+@       IN  NS      ns1.{{ domain }}.
+ns1     IN  A       {{ hostvars['dns1']['ansible_host'] }}
+www     IN  A       {{ hostvars['web1']['ansible_host'] }}
+ntp     IN  A       {{ hostvars['ansible3']['ansible_host'] }}
+mail    IN  A       {{ hostvars['ansible4']['ansible_host'] }}
+ftp     IN  A       {{ hostvars['ansible4']['ansible_host'] }}
+@       IN  MX  10  mail.{{ domain }}.
