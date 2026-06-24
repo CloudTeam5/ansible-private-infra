@@ -4,7 +4,8 @@
 # 2. 서비스 설정   : /var/www/html/index.html
 # 3. 서비스 기동   : httpd, firewalld
 # 4. 방화벽 등록   : http (80/tcp)
-# 5. 웹 접속 확인  : uri 모듈
+# 5. DNS 클라이언트: nmcli로 resolv.conf 자동 업데이트
+# 6. 웹 접속 확인  : uri 모듈
 # ==============================
 
 - name: Install httpd packages
@@ -40,3 +41,12 @@
 
 - name: Reload firewalld
   command: firewall-cmd --reload
+
+- name: Set DNS client via nmcli
+  command: >
+    nmcli connection modify eth0
+    ipv4.dns "{{ hostvars['dns1']['ansible_host'] }} 8.8.8.8"
+    ipv4.dns-search "{{ domain }}"
+
+- name: Apply nmcli connection
+  command: nmcli connection up eth0
