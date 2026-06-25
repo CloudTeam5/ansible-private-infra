@@ -1,0 +1,52 @@
+---
+# ===== WEB 서버 설정 플랜 =====
+# 1. 패키지 설치   : httpd, firewalld
+# 2. 서비스 설정   : /var/www/html/index.html
+# 3. 서비스 기동   : httpd, firewalld
+# 4. 방화벽 등록   : http (80/tcp)
+# 5. DNS 클라이언트: nmcli로 resolv.conf 자동 업데이트
+# 6. 웹 접속 확인  : uri 모듈
+# ==============================
+
+- name: Install httpd packages
+  dnf:
+    name:
+      - httpd
+      - firewalld
+    state: present
+
+- name: Configure index.html
+  copy:
+    content: "HELLO from team5 WEB Server\n"
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart httpd
+
+- name: Start and enable httpd
+  service:
+    name: httpd
+    state: started
+    enabled: true
+
+- name: Start and enable firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Open http port
+  command: firewall-cmd --permanent --add-service=http
+
+- name: Reload firewalld
+  command: firewall-cmd --reload
+
+- name: Set DNS client via nmcli
+  command: >
+    nmcli connection modify eth0
+    ipv4.dns "{{ hostvars['dns1']['ansible_host'] }} 8.8.8.8"
+    ipv4.dns-search "{{ domain }}"
+
+- name: Apply nmcli connection
+  command: nmcli connection up eth0

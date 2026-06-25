@@ -1,13 +1,49 @@
 ---
-- name: 1) NTP 시간 동기화 서버 설정
+# ===== Private Infrastructure 구축 =====
+# Play 1: NTP  서버 (ansible3)
+# Play 2: FTP  서버 (ansible4)
+# Play 3: MAIL 서버 (ansible4)
+# Play 4: DNS  서버 (dns1)
+# Play 5: WEB  서버 (web1)
+# Play 6: WEB  접속 확인 (localhost)
+# =======================================
+
+- name: NTP 서버 구축
   hosts: ntp_servers
   become: yes
   gather_facts: yes
-
   pre_tasks:
-    - name: Display target OS
+    - name: OS 정보 출력
       debug:
         msg: "Configuring NTP on {{ ansible_distribution }} {{ ansible_distribution_version }}"
-
   roles:
     - ntp
+
+- name: FTP 서버 구축
+  hosts: mail_ftp_server
+  roles:
+    - ftp
+
+- name: MAIL 서버 구축
+  hosts: mail_ftp_server
+  roles:
+    - mail
+
+- name: DNS 서버 구축
+  hosts: dns_servers
+  roles:
+    - dns
+
+- name: WEB 서버 구축
+  hosts: web_servers
+  roles:
+    - web
+
+- name: WEB 접속 확인
+  hosts: localhost
+  tasks:
+    - name: 웹 접속 확인
+      uri:
+        url: "http://{{ hostvars['web1']['ansible_host'] }}"
+        return_content: true
+        status_code: 200
